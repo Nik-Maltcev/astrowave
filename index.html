@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Astro Wave — персональные расчеты матрицы судьбы и натальной карты в стиле современной астрологии.">
+    <title>Astro Wave — матрица судьбы и натальная карта</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="theme-dark">
+    <div class="cosmic-glow" aria-hidden="true"></div>
+    <header class="site-header">
+        <div class="logo">
+            <span class="logo__emblem">✶</span>
+            <span class="logo__word">Astro <span class="logo__accent">Wave</span></span>
+        </div>
+        <nav class="main-nav" aria-label="Основная навигация">
+            <a href="#calculators">Калькуляторы</a>
+            <a href="#how-it-works">Как это работает</a>
+            <a href="#testimonials">Отзывы</a>
+        </nav>
+        <a class="cta-link" href="#calculators">Начать</a>
+    </header>
+
+    <main>
+        <section class="hero" id="hero">
+            <div class="hero__content">
+                <p class="hero__label">Почувствуй вибрации космоса</p>
+                <h1 class="hero__title">Astro Wave</h1>
+                <p class="hero__subtitle">Узнай своё предназначение, раскрой таланты и настройся на космическую волну удачи.</p>
+                <div class="hero__actions">
+                    <a class="btn btn--primary" href="#calculators">Рассчитать сейчас</a>
+                    <a class="btn btn--ghost" href="#how-it-works">Подробнее о сервисе</a>
+                </div>
+            </div>
+            <div class="hero__illustration" aria-hidden="true">
+                <div class="orb">
+                    <span class="orb__flare"></span>
+                    <span class="orb__rings"></span>
+                    <span class="orb__stars"></span>
+                </div>
+                <div class="moon moon--left"></div>
+                <div class="moon moon--right"></div>
+            </div>
+        </section>
+
+        <section class="section calculators" id="calculators">
+            <header class="section__header">
+                <h2>Космический профиль за 30 секунд</h2>
+                <p>Введите данные рождения — и получите матрицу судьбы, базовую натальную карту и персональные подсказки на ближайший цикл.</p>
+            </header>
+            <div class="panel-grid">
+                <div class="panel panel--form">
+                    <form id="astro-form" novalidate>
+                        <div class="form-group">
+                            <label for="name">Имя</label>
+                            <input type="text" id="name" name="name" placeholder="Например, Алина" autocomplete="name">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="birth-date">Дата рождения<span aria-hidden="true">*</span></label>
+                                <input type="date" id="birth-date" name="birth-date" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="birth-time">Время</label>
+                                <input type="time" id="birth-time" name="birth-time">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="birth-place">Место рождения</label>
+                            <input type="text" id="birth-place" name="birth-place" placeholder="Город, страна" autocomplete="address-level2">
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--full">Получить расшифровку</button>
+                        <p class="form__note">*Дата рождения необходима для корректных расчётов. Мы не сохраняем ваши данные.</p>
+                        <div class="form-feedback" role="alert" aria-live="polite"></div>
+                    </form>
+                </div>
+                <div class="panel panel--results">
+                    <article class="result-card" id="matrix-result">
+                        <header>
+                            <h3>Матрица судьбы</h3>
+                            <p class="result-intro">Пифагорейская матрица показывает врождённые качества и потенциал.</p>
+                        </header>
+                        <div class="matrix-grid" aria-live="polite"></div>
+                        <dl class="matrix-highlights"></dl>
+                    </article>
+                    <article class="result-card" id="natal-result">
+                        <header>
+                            <h3>Натальная карта</h3>
+                            <p class="result-intro">Базовая интерпретация по солнечному знаку и ключевым числам рождения.</p>
+                        </header>
+                        <div class="natal-summary"></div>
+                        <div class="natal-recommendations"></div>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section how-it-works" id="how-it-works">
+            <header class="section__header">
+                <h2>Как работает Astro Wave</h2>
+                <p>Мы объединяем проверенные эзотерические практики с цифровой визуализацией, чтобы вы могли быстро увидеть общую картину.</p>
+            </header>
+            <div class="steps">
+                <div class="step">
+                    <span class="step__number">01</span>
+                    <h3>Чистые данные</h3>
+                    <p>Вы вводите дату, время и место рождения — система переводит их в числовые и астрологические ключи.</p>
+                </div>
+                <div class="step">
+                    <span class="step__number">02</span>
+                    <h3>Алгоритмика</h3>
+                    <p>Мы рассчитываем матрицу Пифагора, число судьбы и солнечный знак, используя открытые формулы и справочники.</p>
+                </div>
+                <div class="step">
+                    <span class="step__number">03</span>
+                    <h3>Инсайты</h3>
+                    <p>Получаете подсказки по карьере, отношениям и личной энергии, чтобы двигаться в резонансе со своей картой.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section testimonials" id="testimonials">
+            <header class="section__header">
+                <h2>Голоса Astro Wave</h2>
+                <p>Первые пользователи уже поймали свою волну.</p>
+            </header>
+            <div class="testimonials-grid">
+                <blockquote class="testimonial">
+                    <p>«Формат очень удобный — всё в одном месте: и матрица, и быстрый экспресс-анализ карты. Теперь понимаю, на что опираться в запуске проекта.»</p>
+                    <footer>— Мария, 28 лет, предприниматель</footer>
+                </blockquote>
+                <blockquote class="testimonial">
+                    <p>«Понравилось, что подсказки не абстрактные — чётко прописано, где усилиться и как работать с энергетикой. Красивый визуал — уже вдохновляет!»</p>
+                    <footer>— Дмитрий, 32 года, дизайнер</footer>
+                </blockquote>
+                <blockquote class="testimonial">
+                    <p>«Советы по стихиям и циклам помогли выстроить режим дня. Ощущение, что со мной работает личный астролог.»</p>
+                    <footer>— Алина, 24 года, психолог</footer>
+                </blockquote>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div>
+            <h2 class="footer-logo">Astro Wave</h2>
+            <p>Слушай космос, строй планы и действуй осознанно.</p>
+        </div>
+        <div class="footer-cta">
+            <p>Готовы к путешествию?</p>
+            <a class="btn btn--primary" href="#calculators">Сделать расчёт</a>
+        </div>
+    </footer>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
