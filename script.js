@@ -256,13 +256,13 @@ document.addEventListener("DOMContentLoaded", () => {
         const matrixData = buildDestinyMatrix(birthDate);
         const natalData = buildNatalProfile(birthDate, birthTime, place, matrixData, name);
         
-        matrixGrid.innerHTML = '<p style="padding: 20px; text-align: center; color: var(--text-muted);">Натальная карта</p>';
+        matrixGrid.innerHTML = '<p style="padding: 20px; text-align: center; color: var(--text-muted);">Базовая натальная карта</p>';
         matrixHighlights.innerHTML = '';
         renderNatalSummary(natalSummary, natalData);
         renderNatalRecommendations(natalRecommendations, natalData);
 
-        showFeedback(feedback, "Натальная карта готова", "success");
-        premiumSection.style.display = 'none';
+        showFeedback(feedback, "Базовый расчет готов", "success");
+        showPremiumSection('natal', { birthDate, birthTime, place, name });
     });
 
     childForm.addEventListener("submit", async (event) => {
@@ -408,6 +408,10 @@ function formatKey(key) {
         destiny: 'Жизненное предназначение',
         career: 'Карьера и самореализация',
         relationships: 'Отношения',
+        sun_sign: 'Солнечный знак и асцендент',
+        moon_emotions: 'Луна и эмоции',
+        planets: 'Планеты и дома',
+        forecast: 'Прогноз и рекомендации',
         talents: 'Таланты',
         education: 'Воспитание',
         potential: 'Потенциал',
