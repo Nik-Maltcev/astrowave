@@ -1,28 +1,15 @@
 require('dotenv').config();
 const express = require('express');
 const path = require('path');
-const OpenAI = require('openai');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-let openai;
-if (process.env.DEEPSEEK_API_KEY) {
-  const keyPreview = process.env.DEEPSEEK_API_KEY.slice(0, 8) + '...' + process.env.DEEPSEEK_API_KEY.slice(-4);
-  console.log('Using API key:', keyPreview);
-  openai = new OpenAI({
-    apiKey: process.env.DEEPSEEK_API_KEY,
-    baseURL: 'https://api.deepseek.com/v1'
-  });
-} else {
-  console.log('DEEPSEEK_API_KEY not found');
-}
 
 app.use(express.json());
 app.use(express.static('.'));
 
 app.post('/api/analyze', async (req, res) => {
-  if (!openai) {
+  if (!process.env.DEEPSEEK_API_KEY) {
     return res.status(500).json({ success: false, error: 'API ключ не настроен' });
   }
   
@@ -38,15 +25,29 @@ app.post('/api/analyze', async (req, res) => {
       prompt = `Проанализируй финансовую матрицу для человека с датой рождения ${data}. Дай рекомендации по заработку и инвестициям. Ответ в JSON: {"strengths": "...", "opportunities": "...", "risks": "...", "advice": "..."}`;
     }
 
-    const completion = await openai.chat.completions.create({
-      model: 'deepseek-chat',
-      messages: [
-        { role: 'system', content: 'Ты эксперт по нумерологии и матрице судьбы. Отвечай на русском языке в формате JSON.' },
-        { role: 'user', content: prompt }
-      ],
-      response_format: { type: 'json_object' },
-      temperature: 1.0
+    const response = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: 'Ты эксперт по нумерологии и матрице судьбы. Отвечай на русском языке в формате JSON.' },
+          { role: 'user', content: prompt }
+        ],
+        response_format: { type: 'json_object' },
+        temperature: 1.0
+      })
     });
+
+    const completion = await response.json();
+    
+    if (!response.ok) {
+      console.error('DeepSeek API Error:', completion);
+      return res.status(500).json({ success: false, error: 'Ошибка API' });
+    }
 
     const result = JSON.parse(completion.choices[0].message.content);
     res.json({ success: true, data: result });
