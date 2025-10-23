@@ -213,6 +213,11 @@ document.addEventListener("DOMContentLoaded", () => {
             document.querySelectorAll('.matrix-form').forEach(f => f.classList.remove('active'));
             tab.classList.add('active');
             document.querySelector(`[data-form="${tabType}"]`).classList.add('active');
+            
+            renderMatrixPlaceholder(matrixGrid);
+            matrixHighlights.innerHTML = '';
+            natalSummary.innerHTML = '';
+            natalRecommendations.innerHTML = '';
             premiumSection.style.display = 'none';
         });
     });
