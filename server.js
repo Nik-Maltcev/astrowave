@@ -27,11 +27,11 @@ app.post('/api/analyze', async (req, res) => {
     
     let prompt = '';
     if (type === 'child') {
-      prompt = `Проанализируй детскую матрицу судьбы для ребенка с датой рождения ${data.birthDate}. Дай краткие рекомендации по воспитанию, талантам и потенциалу. Ответ в формате JSON: {"talents": "...", "education": "...", "potential": "..."}`;
+      prompt = `Проанализируй детскую матрицу судьбы для ребенка с датой рождения ${data}. Дай краткие рекомендации по воспитанию, талантам и потенциалу. Ответ в формате JSON: {"talents": "...", "education": "...", "potential": "..."}`;
     } else if (type === 'compatibility') {
       prompt = `Проанализируй совместимость двух людей с датами рождения ${data.date1} и ${data.date2}. Дай оценку совместимости и рекомендации. Ответ в JSON: {"score": "...", "strengths": "...", "challenges": "...", "advice": "..."}`;
     } else if (type === 'financial') {
-      prompt = `Проанализируй финансовую матрицу для человека с датой рождения ${data.birthDate}. Дай рекомендации по заработку и инвестициям. Ответ в JSON: {"strengths": "...", "opportunities": "...", "risks": "...", "advice": "..."}`;
+      prompt = `Проанализируй финансовую матрицу для человека с датой рождения ${data}. Дай рекомендации по заработку и инвестициям. Ответ в JSON: {"strengths": "...", "opportunities": "...", "risks": "...", "advice": "..."}`;
     }
 
     const completion = await openai.chat.completions.create({
