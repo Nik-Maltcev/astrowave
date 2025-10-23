@@ -194,17 +194,32 @@ const zodiacProfiles = [
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("astro-form");
-    const feedback = form.querySelector(".form-feedback");
+    const childForm = document.getElementById("child-form");
+    const compatibilityForm = document.getElementById("compatibility-form");
+    const financialForm = document.getElementById("financial-form");
     const matrixGrid = document.querySelector(".matrix-grid");
     const matrixHighlights = document.querySelector(".matrix-highlights");
     const natalSummary = document.querySelector(".natal-summary");
     const natalRecommendations = document.querySelector(".natal-recommendations");
+    const premiumSection = document.querySelector(".premium-section");
 
     renderMatrixPlaceholder(matrixGrid);
     renderNatalPlaceholder(natalSummary, natalRecommendations);
 
-    form.addEventListener("submit", (event) => {
+    document.querySelectorAll('.matrix-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+            const tabType = tab.dataset.tab;
+            document.querySelectorAll('.matrix-tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.matrix-form').forEach(f => f.classList.remove('active'));
+            tab.classList.add('active');
+            document.querySelector(`[data-form="${tabType}"]`).classList.add('active');
+            premiumSection.style.display = 'none';
+        });
+    });
+
+    form.addEventListener("submit", async (event) => {
         event.preventDefault();
+        const feedback = form.querySelector(".form-feedback");
         const birthDate = form["birth-date"].value;
         const birthTime = form["birth-time"].value;
         const name = form["name"].value.trim();
@@ -224,8 +239,138 @@ document.addEventListener("DOMContentLoaded", () => {
         renderNatalRecommendations(natalRecommendations, natalData);
 
         showFeedback(feedback, "Расчёт обновлён. Космическая волна поймана!", "success");
+        premiumSection.style.display = 'none';
+    });
+
+    childForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const feedback = childForm.querySelector(".form-feedback");
+        const birthDate = childForm["child-date"].value;
+        const name = childForm["child-name"].value.trim();
+
+        if (!birthDate) {
+            showFeedback(feedback, "Укажите дату рождения ребенка", "error");
+            return;
+        }
+
+        const matrixData = buildDestinyMatrix(birthDate);
+        renderMatrix(matrixGrid, matrixData);
+        renderMatrixHighlights(matrixHighlights, matrixData, name || "ребенка");
+        
+        natalSummary.innerHTML = '<p style="color: var(--text-muted);">Базовый расчет выполнен</p>';
+        natalRecommendations.innerHTML = '';
+
+        showFeedback(feedback, "Базовый расчет готов", "success");
+        showPremiumSection('child', birthDate);
+    });
+
+    compatibilityForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const feedback = compatibilityForm.querySelector(".form-feedback");
+        const date1 = compatibilityForm["person1-date"].value;
+        const date2 = compatibilityForm["person2-date"].value;
+
+        if (!date1 || !date2) {
+            showFeedback(feedback, "Укажите обе даты рождения", "error");
+            return;
+        }
+
+        matrixGrid.innerHTML = '<p style="padding: 20px; text-align: center; color: var(--text-muted);">Базовый расчет совместимости</p>';
+        matrixHighlights.innerHTML = '<div><dt>Даты</dt><dd>Первый: ' + date1 + '<br>Второй: ' + date2 + '</dd></div>';
+        natalSummary.innerHTML = '';
+        natalRecommendations.innerHTML = '';
+
+        showFeedback(feedback, "Базовый расчет готов", "success");
+        showPremiumSection('compatibility', { date1, date2 });
+    });
+
+    financialForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const feedback = financialForm.querySelector(".form-feedback");
+        const birthDate = financialForm["financial-date"].value;
+        const name = financialForm["financial-name"].value.trim();
+
+        if (!birthDate) {
+            showFeedback(feedback, "Укажите дату рождения", "error");
+            return;
+        }
+
+        const matrixData = buildDestinyMatrix(birthDate);
+        renderMatrix(matrixGrid, matrixData);
+        matrixHighlights.innerHTML = '<div><dt>Финансовая матрица</dt><dd>Базовый расчет для ' + (name || 'пользователя') + '</dd></div>';
+        natalSummary.innerHTML = '';
+        natalRecommendations.innerHTML = '';
+
+        showFeedback(feedback, "Базовый расчет готов", "success");
+        showPremiumSection('financial', birthDate);
+    });
+
+    document.addEventListener('click', async (e) => {
+        if (e.target.classList.contains('unlock-btn')) {
+            const type = e.target.dataset.type;
+            const data = e.target.dataset.data ? JSON.parse(e.target.dataset.data) : {};
+            await unlockPremium(type, data);
+        }
     });
 });
+
+function showPremiumSection(type, data) {
+    const premiumSection = document.querySelector('.premium-section');
+    const unlockBtn = premiumSection.querySelector('.unlock-btn');
+    unlockBtn.dataset.type = type;
+    unlockBtn.dataset.data = JSON.stringify(data);
+    premiumSection.style.display = 'block';
+    premiumSection.querySelector('.premium-content').style.display = 'none';
+    premiumSection.querySelector('.premium-preview').style.display = 'block';
+}
+
+async function unlockPremium(type, data) {
+    const premiumSection = document.querySelector('.premium-section');
+    const premiumContent = premiumSection.querySelector('.premium-content');
+    const premiumPreview = premiumSection.querySelector('.premium-preview');
+
+    premiumPreview.innerHTML = '<p style="color: var(--text-muted);">⏳ Генерируем анализ...</p>';
+
+    try {
+        const response = await fetch('/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type, data })
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            premiumPreview.style.display = 'none';
+            premiumContent.style.display = 'block';
+            
+            let html = '';
+            Object.entries(result.data).forEach(([key, value]) => {
+                html += `<div style="margin-bottom: 20px;"><h4>${formatKey(key)}</h4><p>${value}</p></div>`;
+            });
+            premiumContent.innerHTML = html;
+        } else {
+            premiumPreview.innerHTML = '<p style="color: var(--danger);">❌ ' + result.error + '</p>';
+        }
+    } catch (error) {
+        premiumPreview.innerHTML = '<p style="color: var(--danger);">❌ Ошибка подключения к серверу</p>';
+    }
+}
+
+function formatKey(key) {
+    const map = {
+        talents: 'Таланты',
+        education: 'Воспитание',
+        potential: 'Потенциал',
+        score: 'Оценка совместимости',
+        strengths: 'Сильные стороны',
+        challenges: 'Вызовы',
+        advice: 'Рекомендации',
+        opportunities: 'Возможности',
+        risks: 'Риски'
+    };
+    return map[key] || key;
+}
 
 function renderMatrixPlaceholder(container) {
     const digits = [1, 2, 3, 4, 5, 6, 7, 8, 9];
