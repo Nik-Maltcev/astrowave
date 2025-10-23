@@ -219,6 +219,8 @@ document.addEventListener("DOMContentLoaded", () => {
             natalSummary.innerHTML = '';
             natalRecommendations.innerHTML = '';
             premiumSection.style.display = 'none';
+            const natalPremium = document.querySelector('.premium-section-natal');
+            if (natalPremium) natalPremium.style.display = 'none';
             
             document.getElementById('natal-result').style.display = tabType === 'natal' ? 'block' : 'none';
         });
@@ -393,7 +395,8 @@ function getBasicCompatibility(num1, num2) {
 });
 
 function showPremiumSection(type, data) {
-    const premiumSection = document.querySelector('.premium-section');
+    const sectionClass = type === 'natal' ? '.premium-section-natal' : '.premium-section';
+    const premiumSection = document.querySelector(sectionClass);
     const unlockBtn = premiumSection.querySelector('.unlock-btn');
     unlockBtn.dataset.type = type;
     unlockBtn.dataset.data = JSON.stringify(data);
@@ -421,7 +424,8 @@ async function loadBasicAnalysis(type, data, container) {
 }
 
 async function unlockPremium(type, data) {
-    const premiumSection = document.querySelector('.premium-section');
+    const sectionClass = type === 'natal' ? '.premium-section-natal' : '.premium-section';
+    const premiumSection = document.querySelector(sectionClass);
     const premiumContent = premiumSection.querySelector('.premium-content');
     const premiumPreview = premiumSection.querySelector('.premium-preview');
 
