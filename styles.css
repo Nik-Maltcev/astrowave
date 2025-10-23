@@ -439,6 +439,10 @@ input:focus {
     gap: 20px;
 }
 
+#natal-result {
+    display: none;
+}
+
 .result-card header h3 {
     font-size: 28px;
     text-transform: uppercase;

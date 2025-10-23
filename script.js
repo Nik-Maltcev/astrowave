@@ -222,6 +222,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const natalPremium = document.querySelector('.premium-section-natal');
             if (natalPremium) natalPremium.style.display = 'none';
             
+            document.getElementById('matrix-result').style.display = tabType === 'natal' ? 'none' : 'block';
             document.getElementById('natal-result').style.display = tabType === 'natal' ? 'block' : 'none';
         });
     });
@@ -241,9 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderMatrix(matrixGrid, matrixData);
         renderMatrixHighlights(matrixHighlights, matrixData, name);
         
-        natalSummary.innerHTML = '<p style="color: var(--text-muted);">Базовый расчет матрицы судьбы</p>';
-        natalRecommendations.innerHTML = '';
-
+        document.getElementById('matrix-result').style.display = 'block';
         document.getElementById('natal-result').style.display = 'none';
         showFeedback(feedback, "Генерируем анализ...", "success");
         await loadBasicAnalysis('personal', birthDate, natalSummary);
@@ -267,9 +266,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const matrixData = buildDestinyMatrix(birthDate);
         const natalData = buildNatalProfile(birthDate, birthTime, place, matrixData, name);
         
+        document.getElementById('matrix-result').style.display = 'none';
         document.getElementById('natal-result').style.display = 'block';
-        matrixGrid.innerHTML = '';
-        matrixHighlights.innerHTML = '';
         renderNatalSummary(natalSummary, natalData);
         renderNatalRecommendations(natalRecommendations, natalData);
 
@@ -297,6 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderMatrix(matrixGrid, matrixData);
         renderMatrixHighlights(matrixHighlights, matrixData, name || "ребенка");
         
+        document.getElementById('matrix-result').style.display = 'block';
         document.getElementById('natal-result').style.display = 'none';
         natalSummary.innerHTML = '<p style="color: var(--text-muted);">Базовый расчет выполнен</p>';
         natalRecommendations.innerHTML = '';
