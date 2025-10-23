@@ -219,6 +219,8 @@ document.addEventListener("DOMContentLoaded", () => {
             natalSummary.innerHTML = '';
             natalRecommendations.innerHTML = '';
             premiumSection.style.display = 'none';
+            
+            document.getElementById('natal-result').style.display = tabType === 'natal' ? 'block' : 'none';
         });
     });
 
@@ -240,6 +242,7 @@ document.addEventListener("DOMContentLoaded", () => {
         natalSummary.innerHTML = '<p style="color: var(--text-muted);">Базовый расчет матрицы судьбы</p>';
         natalRecommendations.innerHTML = '';
 
+        document.getElementById('natal-result').style.display = 'none';
         showFeedback(feedback, "Генерируем анализ...", "success");
         await loadBasicAnalysis('personal', birthDate, natalSummary);
         showPremiumSection('personal', birthDate);
@@ -262,13 +265,17 @@ document.addEventListener("DOMContentLoaded", () => {
         const matrixData = buildDestinyMatrix(birthDate);
         const natalData = buildNatalProfile(birthDate, birthTime, place, matrixData, name);
         
-        matrixGrid.innerHTML = '<p style="padding: 20px; text-align: center; color: var(--text-muted);">Базовая натальная карта</p>';
+        document.getElementById('natal-result').style.display = 'block';
+        matrixGrid.innerHTML = '';
         matrixHighlights.innerHTML = '';
         renderNatalSummary(natalSummary, natalData);
         renderNatalRecommendations(natalRecommendations, natalData);
 
         showFeedback(feedback, "Генерируем анализ...", "success");
-        await loadBasicAnalysis('natal', { birthDate, birthTime, place }, matrixGrid);
+        const aiContainer = document.createElement('div');
+        aiContainer.style.cssText = 'padding: 20px; color: var(--text-muted); line-height: 1.8; margin-top: 20px;';
+        natalRecommendations.appendChild(aiContainer);
+        await loadBasicAnalysis('natal', { birthDate, birthTime, place }, aiContainer);
         showFeedback(feedback, "Базовый анализ готов", "success");
         showPremiumSection('natal', { birthDate, birthTime, place, name });
     });
@@ -288,6 +295,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderMatrix(matrixGrid, matrixData);
         renderMatrixHighlights(matrixHighlights, matrixData, name || "ребенка");
         
+        document.getElementById('natal-result').style.display = 'none';
         natalSummary.innerHTML = '<p style="color: var(--text-muted);">Базовый расчет выполнен</p>';
         natalRecommendations.innerHTML = '';
 
@@ -322,6 +330,7 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         `;
         
+        document.getElementById('natal-result').style.display = 'none';
         matrixHighlights.innerHTML = `
             <div><dt>Даты рождения</dt><dd>Первый: ${date1}<br>Второй: ${date2}</dd></div>
             <div><dt>Общая оценка</dt><dd>Для полного анализа разблокируйте премиум версию</dd></div>
@@ -373,9 +382,12 @@ function getBasicCompatibility(num1, num2) {
 
     document.addEventListener('click', async (e) => {
         if (e.target.classList.contains('unlock-btn')) {
+            e.target.disabled = true;
+            e.target.textContent = '⏳ Загрузка...';
             const type = e.target.dataset.type;
             const data = e.target.dataset.data ? JSON.parse(e.target.dataset.data) : {};
             await unlockPremium(type, data);
+            e.target.disabled = false;
         }
     });
 });
