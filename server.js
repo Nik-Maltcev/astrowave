@@ -8,10 +8,14 @@ const PORT = process.env.PORT || 3000;
 
 let openai;
 if (process.env.DEEPSEEK_API_KEY) {
+  const keyPreview = process.env.DEEPSEEK_API_KEY.slice(0, 8) + '...' + process.env.DEEPSEEK_API_KEY.slice(-4);
+  console.log('Using API key:', keyPreview);
   openai = new OpenAI({
     apiKey: process.env.DEEPSEEK_API_KEY,
     baseURL: 'https://api.deepseek.com'
   });
+} else {
+  console.log('DEEPSEEK_API_KEY not found');
 }
 
 app.use(express.json());
