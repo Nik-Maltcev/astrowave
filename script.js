@@ -275,14 +275,37 @@ document.addEventListener("DOMContentLoaded", () => {
             return;
         }
 
-        matrixGrid.innerHTML = '<p style="padding: 20px; text-align: center; color: var(--text-muted);">Базовый расчет совместимости</p>';
-        matrixHighlights.innerHTML = '<div><dt>Даты</dt><dd>Первый: ' + date1 + '<br>Второй: ' + date2 + '</dd></div>';
+        const matrix1 = buildDestinyMatrix(date1);
+        const matrix2 = buildDestinyMatrix(date2);
+        
+        matrixGrid.innerHTML = `
+            <div style="padding: 20px;">
+                <h4 style="color: var(--accent); margin-bottom: 12px;">Базовый анализ совместимости</h4>
+                <p style="color: var(--text-muted); line-height: 1.6;">
+                    <strong>Первый партнер:</strong> Число судьбы ${matrix1.lifePath}<br>
+                    <strong>Второй партнер:</strong> Число судьбы ${matrix2.lifePath}<br><br>
+                    ${getBasicCompatibility(matrix1.lifePath, matrix2.lifePath)}
+                </p>
+            </div>
+        `;
+        
+        matrixHighlights.innerHTML = `
+            <div><dt>Даты рождения</dt><dd>Первый: ${date1}<br>Второй: ${date2}</dd></div>
+            <div><dt>Общая оценка</dt><dd>Для полного анализа разблокируйте премиум версию</dd></div>
+        `;
         natalSummary.innerHTML = '';
         natalRecommendations.innerHTML = '';
 
         showFeedback(feedback, "Базовый расчет готов", "success");
         showPremiumSection('compatibility', { date1, date2 });
     });
+
+function getBasicCompatibility(num1, num2) {
+    const sum = num1 + num2;
+    if (sum >= 15) return 'Высокая энергетическая совместимость. Партнеры дополняют друг друга.';
+    if (sum >= 10) return 'Средняя совместимость. Нужно работать над отношениями.';
+    return 'Низкая совместимость. Требуется особое внимание к партнеру.';
+}
 
     financialForm.addEventListener("submit", async (event) => {
         event.preventDefault();
