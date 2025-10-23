@@ -8,6 +8,59 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static('.'));
 
+app.post('/api/analyze-basic', async (req, res) => {
+  if (!process.env.DEEPSEEK_API_KEY) {
+    return res.status(500).json({ success: false, error: 'API ключ не настроен' });
+  }
+  
+  try {
+    const { type, data } = req.body;
+    
+    let prompt = '';
+    if (type === 'personal') {
+      prompt = `Дай краткий анализ матрицы судьбы для даты ${data}. Ответ в JSON: {"summary": "2-3 предложения о главном"}`;
+    } else if (type === 'natal') {
+      prompt = `Дай краткий анализ натальной карты для даты ${data.birthDate}. Ответ в JSON: {"summary": "2-3 предложения о главном"}`;
+    } else if (type === 'child') {
+      prompt = `Дай краткий анализ детской матрицы для даты ${data}. Ответ в JSON: {"summary": "2-3 предложения о главном"}`;
+    } else if (type === 'compatibility') {
+      prompt = `Дай краткую оценку совместимости для дат ${data.date1} и ${data.date2}. Ответ в JSON: {"summary": "2-3 предложения"}`;
+    } else if (type === 'financial') {
+      prompt = `Дай краткий финансовый прогноз для даты ${data}. Ответ в JSON: {"summary": "2-3 предложения"}`;
+    }
+
+    const response = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: 'Ты эксперт по нумерологии. Отвечай кратко на русском в JSON.' },
+          { role: 'user', content: prompt }
+        ],
+        response_format: { type: 'json_object' },
+        temperature: 1.0,
+        max_tokens: 150
+      })
+    });
+
+    const completion = await response.json();
+    
+    if (!response.ok) {
+      return res.status(500).json({ success: false, error: 'Ошибка API' });
+    }
+
+    const result = JSON.parse(completion.choices[0].message.content);
+    res.json({ success: true, data: result });
+  } catch (error) {
+    console.error('API Error:', error);
+    res.status(500).json({ success: false, error: 'Ошибка анализа' });
+  }
+});
+
 app.post('/api/analyze', async (req, res) => {
   if (!process.env.DEEPSEEK_API_KEY) {
     return res.status(500).json({ success: false, error: 'API ключ не настроен' });

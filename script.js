@@ -235,7 +235,8 @@ document.addEventListener("DOMContentLoaded", () => {
         natalSummary.innerHTML = '<p style="color: var(--text-muted);">Базовый расчет матрицы судьбы</p>';
         natalRecommendations.innerHTML = '';
 
-        showFeedback(feedback, "Базовый расчет готов", "success");
+        showFeedback(feedback, "Генерируем анализ...", "success");
+        await loadBasicAnalysis('personal', birthDate, natalSummary);
         showPremiumSection('personal', birthDate);
     });
 
@@ -261,7 +262,9 @@ document.addEventListener("DOMContentLoaded", () => {
         renderNatalSummary(natalSummary, natalData);
         renderNatalRecommendations(natalRecommendations, natalData);
 
-        showFeedback(feedback, "Базовый расчет готов", "success");
+        showFeedback(feedback, "Генерируем анализ...", "success");
+        await loadBasicAnalysis('natal', { birthDate, birthTime, place }, matrixGrid);
+        showFeedback(feedback, "Базовый анализ готов", "success");
         showPremiumSection('natal', { birthDate, birthTime, place, name });
     });
 
@@ -283,7 +286,9 @@ document.addEventListener("DOMContentLoaded", () => {
         natalSummary.innerHTML = '<p style="color: var(--text-muted);">Базовый расчет выполнен</p>';
         natalRecommendations.innerHTML = '';
 
-        showFeedback(feedback, "Базовый расчет готов", "success");
+        showFeedback(feedback, "Генерируем анализ...", "success");
+        await loadBasicAnalysis('child', birthDate, natalSummary);
+        showFeedback(feedback, "Базовый анализ готов", "success");
         showPremiumSection('child', birthDate);
     });
 
@@ -319,7 +324,12 @@ document.addEventListener("DOMContentLoaded", () => {
         natalSummary.innerHTML = '';
         natalRecommendations.innerHTML = '';
 
-        showFeedback(feedback, "Базовый расчет готов", "success");
+        showFeedback(feedback, "Генерируем анализ...", "success");
+        const compatContainer = document.createElement('div');
+        compatContainer.style.cssText = 'padding: 20px; color: var(--text-muted); line-height: 1.8;';
+        matrixGrid.appendChild(compatContainer);
+        await loadBasicAnalysis('compatibility', { date1, date2 }, compatContainer);
+        showFeedback(feedback, "Базовый анализ готов", "success");
         showPremiumSection('compatibility', { date1, date2 });
     });
 
@@ -347,7 +357,12 @@ function getBasicCompatibility(num1, num2) {
         natalSummary.innerHTML = '';
         natalRecommendations.innerHTML = '';
 
-        showFeedback(feedback, "Базовый расчет готов", "success");
+        showFeedback(feedback, "Генерируем анализ...", "success");
+        const finContainer = document.createElement('div');
+        finContainer.style.cssText = 'padding: 20px; color: var(--text-muted); line-height: 1.8;';
+        matrixGrid.appendChild(finContainer);
+        await loadBasicAnalysis('financial', birthDate, finContainer);
+        showFeedback(feedback, "Базовый анализ готов", "success");
         showPremiumSection('financial', birthDate);
     });
 
@@ -368,6 +383,24 @@ function showPremiumSection(type, data) {
     premiumSection.style.display = 'block';
     premiumSection.querySelector('.premium-content').style.display = 'none';
     premiumSection.querySelector('.premium-preview').style.display = 'block';
+}
+
+async function loadBasicAnalysis(type, data, container) {
+    try {
+        const response = await fetch('/api/analyze-basic', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type, data })
+        });
+
+        const result = await response.json();
+
+        if (result.success && result.data.summary) {
+            container.innerHTML = `<p style="color: var(--text-muted); line-height: 1.8;">${result.data.summary}</p>`;
+        }
+    } catch (error) {
+        console.error('Basic analysis error:', error);
+    }
 }
 
 async function unlockPremium(type, data) {
