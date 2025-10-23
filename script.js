@@ -445,7 +445,8 @@ async function unlockPremium(type, data) {
             
             let html = '';
             Object.entries(result.data).forEach(([key, value]) => {
-                html += `<div style="margin-bottom: 20px;"><h4>${formatKey(key)}</h4><p>${value}</p></div>`;
+                const formatted = formatText(value);
+                html += `<div style="margin-bottom: 24px; padding: 20px; background: rgba(18, 12, 32, 0.4); border-radius: 12px; border-left: 3px solid var(--accent);"><h4 style="color: var(--accent); margin-bottom: 12px; font-size: 18px;">${formatKey(key)}</h4>${formatted}</div>`;
             });
             premiumContent.innerHTML = html;
         } else {
@@ -476,6 +477,19 @@ function formatKey(key) {
         risks: 'Риски'
     };
     return map[key] || key;
+}
+
+function formatText(text) {
+    return text
+        .split('\n\n')
+        .filter(p => p.trim())
+        .map(p => {
+            if (p.match(/^\d+\./)) {
+                return `<p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 12px; padding-left: 8px; border-left: 2px solid rgba(212, 175, 55, 0.3);">${p}</p>`;
+            }
+            return `<p style="color: var(--text-muted); line-height: 1.8; margin-bottom: 12px;">${p}</p>`;
+        })
+        .join('');
 }
 
 function renderMatrixPlaceholder(container) {
