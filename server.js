@@ -12,7 +12,7 @@ if (process.env.DEEPSEEK_API_KEY) {
   console.log('Using API key:', keyPreview);
   openai = new OpenAI({
     apiKey: process.env.DEEPSEEK_API_KEY,
-    baseURL: 'https://api.deepseek.com'
+    baseURL: 'https://api.deepseek.com/v1'
   });
 } else {
   console.log('DEEPSEEK_API_KEY not found');
