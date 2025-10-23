@@ -221,24 +221,47 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
         const feedback = form.querySelector(".form-feedback");
         const birthDate = form["birth-date"].value;
-        const birthTime = form["birth-time"].value;
         const name = form["name"].value.trim();
-        const place = form["birth-place"].value.trim();
 
         if (!birthDate) {
-            showFeedback(feedback, "Укажите дату рождения — без неё космос молчит.", "error");
+            showFeedback(feedback, "Укажите дату рождения", "error");
             return;
         }
 
         const matrixData = buildDestinyMatrix(birthDate);
         renderMatrix(matrixGrid, matrixData);
         renderMatrixHighlights(matrixHighlights, matrixData, name);
+        
+        natalSummary.innerHTML = '<p style="color: var(--text-muted);">Базовый расчет матрицы судьбы</p>';
+        natalRecommendations.innerHTML = '';
 
+        showFeedback(feedback, "Базовый расчет готов", "success");
+        showPremiumSection('personal', birthDate);
+    });
+
+    const natalForm = document.getElementById("natal-form");
+    natalForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const feedback = natalForm.querySelector(".form-feedback");
+        const birthDate = natalForm["natal-date"].value;
+        const birthTime = natalForm["natal-time"].value;
+        const name = natalForm["natal-name"].value.trim();
+        const place = natalForm["natal-place"].value.trim();
+
+        if (!birthDate) {
+            showFeedback(feedback, "Укажите дату рождения", "error");
+            return;
+        }
+
+        const matrixData = buildDestinyMatrix(birthDate);
         const natalData = buildNatalProfile(birthDate, birthTime, place, matrixData, name);
+        
+        matrixGrid.innerHTML = '<p style="padding: 20px; text-align: center; color: var(--text-muted);">Натальная карта</p>';
+        matrixHighlights.innerHTML = '';
         renderNatalSummary(natalSummary, natalData);
         renderNatalRecommendations(natalRecommendations, natalData);
 
-        showFeedback(feedback, "Расчёт обновлён. Космическая волна поймана!", "success");
+        showFeedback(feedback, "Натальная карта готова", "success");
         premiumSection.style.display = 'none';
     });
 
@@ -382,6 +405,9 @@ async function unlockPremium(type, data) {
 
 function formatKey(key) {
     const map = {
+        destiny: 'Жизненное предназначение',
+        career: 'Карьера и самореализация',
+        relationships: 'Отношения',
         talents: 'Таланты',
         education: 'Воспитание',
         potential: 'Потенциал',

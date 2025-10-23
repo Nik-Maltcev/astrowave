@@ -52,7 +52,8 @@
                 <h2>Космический профиль за 30 секунд</h2>
                 <p>Введите данные рождения — и получите матрицу судьбы, базовую натальную карту и персональные подсказки на ближайший цикл.</p>
                 <div class="matrix-tabs">
-                    <button class="matrix-tab active" data-tab="personal">Личная матрица</button>
+                    <button class="matrix-tab active" data-tab="personal">Матрица судьбы</button>
+                    <button class="matrix-tab" data-tab="natal">Натальная карта</button>
                     <button class="matrix-tab" data-tab="child">Детская матрица</button>
                     <button class="matrix-tab" data-tab="compatibility">Совместимость</button>
                     <button class="matrix-tab" data-tab="financial">Финансовая матрица</button>
@@ -65,22 +66,34 @@
                             <label for="name">Имя</label>
                             <input type="text" id="name" name="name" placeholder="Например, Алина" autocomplete="name">
                         </div>
+                        <div class="form-group">
+                            <label for="birth-date">Дата рождения<span aria-hidden="true">*</span></label>
+                            <input type="date" id="birth-date" name="birth-date" required>
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--full">Рассчитать матрицу</button>
+                        <div class="form-feedback" role="alert" aria-live="polite"></div>
+                    </form>
+                    
+                    <form id="natal-form" class="matrix-form" data-form="natal" novalidate>
+                        <div class="form-group">
+                            <label for="natal-name">Имя</label>
+                            <input type="text" id="natal-name" name="natal-name" placeholder="Например, Алина">
+                        </div>
                         <div class="form-row">
                             <div class="form-group">
-                                <label for="birth-date">Дата рождения<span aria-hidden="true">*</span></label>
-                                <input type="date" id="birth-date" name="birth-date" required>
+                                <label for="natal-date">Дата рождения<span aria-hidden="true">*</span></label>
+                                <input type="date" id="natal-date" name="natal-date" required>
                             </div>
                             <div class="form-group">
-                                <label for="birth-time">Время</label>
-                                <input type="time" id="birth-time" name="birth-time">
+                                <label for="natal-time">Время</label>
+                                <input type="time" id="natal-time" name="natal-time">
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="birth-place">Место рождения</label>
-                            <input type="text" id="birth-place" name="birth-place" placeholder="Город, страна" autocomplete="address-level2">
+                            <label for="natal-place">Место рождения</label>
+                            <input type="text" id="natal-place" name="natal-place" placeholder="Город, страна">
                         </div>
-                        <button type="submit" class="btn btn--primary btn--full">Получить расшифровку</button>
-                        <p class="form__note">*Дата рождения необходима для корректных расчётов. Мы не сохраняем ваши данные.</p>
+                        <button type="submit" class="btn btn--primary btn--full">Получить натальную карту</button>
                         <div class="form-feedback" role="alert" aria-live="polite"></div>
                     </form>
                     
