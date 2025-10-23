@@ -6,15 +6,22 @@ const OpenAI = require('openai');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-const openai = new OpenAI({
-  apiKey: process.env.DEEPSEEK_API_KEY,
-  baseURL: 'https://api.deepseek.com'
-});
+let openai;
+if (process.env.DEEPSEEK_API_KEY) {
+  openai = new OpenAI({
+    apiKey: process.env.DEEPSEEK_API_KEY,
+    baseURL: 'https://api.deepseek.com'
+  });
+}
 
 app.use(express.json());
 app.use(express.static('.'));
 
 app.post('/api/analyze', async (req, res) => {
+  if (!openai) {
+    return res.status(500).json({ success: false, error: 'API ключ не настроен' });
+  }
+  
   try {
     const { type, data } = req.body;
     
