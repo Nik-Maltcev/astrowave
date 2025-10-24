@@ -354,6 +354,10 @@ p {
     margin-top: 16px;
 }
 
+.results-container {
+    max-width: 100%;
+}
+
 .panel-grid {
     display: grid;
     gap: clamp(24px, 4vw, 40px);
@@ -623,6 +627,8 @@ input:focus {
     border-radius: var(--radius-lg);
     backdrop-filter: blur(18px);
     box-shadow: var(--shadow-soft);
+    max-width: 100%;
+    width: 100%;
 }
 
 .premium-preview {
