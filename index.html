@@ -54,6 +54,7 @@
                 <div class="matrix-tabs">
                     <button class="matrix-tab active" data-tab="personal">Матрица судьбы</button>
                     <button class="matrix-tab" data-tab="natal">Натальная карта</button>
+                    <button class="matrix-tab" data-tab="tarot">Таро на день</button>
                     <button class="matrix-tab" data-tab="child">Детская матрица</button>
                     <button class="matrix-tab" data-tab="compatibility">Совместимость</button>
                     <button class="matrix-tab" data-tab="financial">Финансовая матрица</button>
@@ -72,6 +73,23 @@
                             <input type="date" id="birth-date" name="birth-date" required>
                         </div>
                         <button type="submit" class="btn btn--primary btn--full">Рассчитать матрицу</button>
+                        <div class="form-feedback" role="alert" aria-live="polite"></div>
+                    </form>
+                    
+                    <form id="tarot-form" class="matrix-form" data-form="tarot" novalidate>
+                        <div class="form-group">
+                            <label for="tarot-name">Имя</label>
+                            <input type="text" id="tarot-name" name="tarot-name" placeholder="Например, Алина">
+                        </div>
+                        <div class="form-group">
+                            <label for="tarot-date">Дата рождения<span aria-hidden="true">*</span></label>
+                            <input type="date" id="tarot-date" name="tarot-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="tarot-city">Город</label>
+                            <input type="text" id="tarot-city" name="tarot-city" placeholder="Например, Москва">
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--full">Получить расклад</button>
                         <div class="form-feedback" role="alert" aria-live="polite"></div>
                     </form>
                     
@@ -145,6 +163,13 @@
                         </header>
                         <div class="matrix-grid" aria-live="polite"></div>
                         <dl class="matrix-highlights"></dl>
+                    </article>
+                    <article class="result-card" id="tarot-result">
+                        <header>
+                            <h3>Таро на день</h3>
+                            <p class="result-intro">Бесплатный расклад на сегодняшний день.</p>
+                        </header>
+                        <div class="tarot-reading"></div>
                     </article>
                     <article class="result-card" id="natal-result">
                         <header>

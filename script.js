@@ -194,6 +194,7 @@ const zodiacProfiles = [
 
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("astro-form");
+    const tarotForm = document.getElementById("tarot-form");
     const childForm = document.getElementById("child-form");
     const compatibilityForm = document.getElementById("compatibility-form");
     const financialForm = document.getElementById("financial-form");
@@ -222,8 +223,9 @@ document.addEventListener("DOMContentLoaded", () => {
             const natalPremium = document.querySelector('.premium-section-natal');
             if (natalPremium) natalPremium.style.display = 'none';
             
-            document.getElementById('matrix-result').style.display = tabType === 'natal' ? 'none' : 'block';
+            document.getElementById('matrix-result').style.display = (tabType === 'natal' || tabType === 'tarot') ? 'none' : 'block';
             document.getElementById('natal-result').style.display = tabType === 'natal' ? 'block' : 'none';
+            document.getElementById('tarot-result').style.display = tabType === 'tarot' ? 'block' : 'none';
         });
     });
 
@@ -247,6 +249,29 @@ document.addEventListener("DOMContentLoaded", () => {
         showFeedback(feedback, "Генерируем анализ...", "success");
         await loadBasicAnalysis('personal', birthDate, natalSummary);
         showPremiumSection('personal', birthDate);
+    });
+
+    tarotForm.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const feedback = tarotForm.querySelector(".form-feedback");
+        const birthDate = tarotForm["tarot-date"].value;
+        const name = tarotForm["tarot-name"].value.trim();
+        const city = tarotForm["tarot-city"].value.trim();
+
+        if (!birthDate) {
+            showFeedback(feedback, "Укажите дату рождения", "error");
+            return;
+        }
+
+        document.getElementById('matrix-result').style.display = 'none';
+        document.getElementById('natal-result').style.display = 'none';
+        document.getElementById('tarot-result').style.display = 'block';
+
+        showFeedback(feedback, "Генерируем расклад...", "success");
+        const tarotReading = document.querySelector('.tarot-reading');
+        tarotReading.innerHTML = '<p style="color: var(--text-muted);">⏳ Тасую карты...</p>';
+        await loadTarotReading({ name, birthDate, city }, tarotReading);
+        showFeedback(feedback, "Расклад готов", "success");
     });
 
     const natalForm = document.getElementById("natal-form");
@@ -402,6 +427,50 @@ function showPremiumSection(type, data) {
     premiumSection.style.display = 'block';
     premiumSection.querySelector('.premium-content').style.display = 'none';
     premiumSection.querySelector('.premium-preview').style.display = 'block';
+}
+
+async function loadTarotReading(data, container) {
+    try {
+        const response = await fetch('/api/tarot', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            const { card1, card2, card3, summary } = result.data;
+            container.innerHTML = `
+                <div style="display: grid; gap: 20px; margin-bottom: 24px;">
+                    <div style="padding: 20px; background: rgba(18, 12, 32, 0.4); border-radius: 12px; border-left: 3px solid var(--accent);">
+                        <h4 style="color: var(--accent); margin-bottom: 8px;">🎴 Прошлое</h4>
+                        <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">${card1.name}</p>
+                        <p style="color: var(--text-muted); line-height: 1.8;">${card1.meaning}</p>
+                    </div>
+                    <div style="padding: 20px; background: rgba(18, 12, 32, 0.4); border-radius: 12px; border-left: 3px solid var(--accent);">
+                        <h4 style="color: var(--accent); margin-bottom: 8px;">✨ Настоящее</h4>
+                        <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">${card2.name}</p>
+                        <p style="color: var(--text-muted); line-height: 1.8;">${card2.meaning}</p>
+                    </div>
+                    <div style="padding: 20px; background: rgba(18, 12, 32, 0.4); border-radius: 12px; border-left: 3px solid var(--accent);">
+                        <h4 style="color: var(--accent); margin-bottom: 8px;">🔮 Будущее</h4>
+                        <p style="color: var(--text-primary); font-weight: 600; margin-bottom: 8px;">${card3.name}</p>
+                        <p style="color: var(--text-muted); line-height: 1.8;">${card3.meaning}</p>
+                    </div>
+                </div>
+                <div style="padding: 20px; background: rgba(18, 12, 32, 0.6); border-radius: 12px; border: 1px solid rgba(212, 175, 55, 0.3);">
+                    <h4 style="color: var(--accent); margin-bottom: 12px;">🌟 Общий совет на день</h4>
+                    <p style="color: var(--text-muted); line-height: 1.8;">${summary}</p>
+                </div>
+            `;
+        } else {
+            container.innerHTML = '<p style="color: var(--danger);">❌ ' + result.error + '</p>';
+        }
+    } catch (error) {
+        console.error('Tarot reading error:', error);
+        container.innerHTML = '<p style="color: var(--danger);">❌ Ошибка подключения</p>';
+    }
 }
 
 async function loadBasicAnalysis(type, data, container) {

@@ -443,7 +443,8 @@ input:focus {
     gap: 20px;
 }
 
-#natal-result {
+#natal-result,
+#tarot-result {
     display: none;
 }
 

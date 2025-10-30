@@ -8,6 +8,58 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static('.'));
 
+app.post('/api/tarot', async (req, res) => {
+  if (!process.env.DEEPSEEK_API_KEY) {
+    return res.status(500).json({ success: false, error: 'API ключ не настроен' });
+  }
+  
+  try {
+    const { name, birthDate, city } = req.body;
+    const today = new Date().toLocaleDateString('ru-RU');
+    
+    const prompt = `Ты профессиональный таролог. Сделай расклад на день для ${name || 'человека'}, дата рождения ${birthDate}, город ${city || 'не указан'}. Сегодня ${today}.
+
+Выполни расклад на 3 карты: Прошлое-Настоящее-Будущее.
+
+Ответ в JSON:
+{
+  "card1": {"name": "название карты", "meaning": "значение для прошлого 80-120 слов"},
+  "card2": {"name": "название карты", "meaning": "значение для настоящего 80-120 слов"},
+  "card3": {"name": "название карты", "meaning": "значение для будущего 80-120 слов"},
+  "summary": "общий совет на день 100-150 слов"
+}`;
+
+    const response = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: 'Ты эксперт по Таро. Отвечай на русском в JSON.' },
+          { role: 'user', content: prompt }
+        ],
+        response_format: { type: 'json_object' },
+        temperature: 1.0
+      })
+    });
+
+    const completion = await response.json();
+    
+    if (!response.ok) {
+      return res.status(500).json({ success: false, error: 'Ошибка API' });
+    }
+
+    const result = JSON.parse(completion.choices[0].message.content);
+    res.json({ success: true, data: result });
+  } catch (error) {
+    console.error('Tarot API Error:', error);
+    res.status(500).json({ success: false, error: 'Ошибка анализа' });
+  }
+});
+
 app.post('/api/analyze-basic', async (req, res) => {
   if (!process.env.DEEPSEEK_API_KEY) {
     return res.status(500).json({ success: false, error: 'API ключ не настроен' });
