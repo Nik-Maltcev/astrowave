@@ -303,6 +303,60 @@ app.post('/api/analyze', async (req, res) => {
   }
 });
 
+app.post('/api/neuro-horoscope', async (req, res) => {
+  if (!process.env.DEEPSEEK_API_KEY) {
+    return res.status(500).json({ success: false, error: 'API ключ не настроен' });
+  }
+
+  try {
+    const { name, birthDate, city } = req.body;
+
+    const prompt = `Ты — мудрый астролог с 20-летним стажем. Составь прогноз на 2026 год для человека: Имя: ${name || 'Путешественник'}, Дата рождения: ${birthDate}, Город: ${city || 'Не указан'}.
+
+    Учитывай транзиты Сатурна и технологические тренды 2026 года.
+    Стиль: загадочный, но конкретный, как у эксперта-таролога.
+
+    Ответ строго в формате JSON:
+    {
+      "theme": "Главная тема года (короткая метафоричная фраза)",
+      "general": "Общий прогноз на 2026 (100-150 слов, смешивая мистику и технологии)",
+      "career": "Карьера и финансы (акцент на тренды будущего)",
+      "love": "Личная жизнь и отношения",
+      "advice": "Самый важный совет (одно емкое предложение)"
+    }`;
+
+    const response = await fetch('https://api.deepseek.com/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.DEEPSEEK_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: 'Ты эксперт по астрологии и футурологии. Отвечай на русском языке в формате JSON.' },
+          { role: 'user', content: prompt }
+        ],
+        response_format: { type: 'json_object' },
+        temperature: 0.8
+      })
+    });
+
+    const completion = await response.json();
+
+    if (!response.ok) {
+      console.error('DeepSeek API Error:', completion);
+      return res.status(500).json({ success: false, error: 'Ошибка API' });
+    }
+
+    const result = JSON.parse(completion.choices[0].message.content);
+    res.json({ success: true, data: result });
+  } catch (error) {
+    console.error('Neuro-Horoscope API Error:', error);
+    res.status(500).json({ success: false, error: 'Ошибка генерации гороскопа' });
+  }
+});
+
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
