@@ -195,6 +195,7 @@ const zodiacProfiles = [
 document.addEventListener("DOMContentLoaded", () => {
     const form = document.getElementById("astro-form");
     const tarotForm = document.getElementById("tarot-form");
+    const neuro2026Form = document.getElementById("neuro2026-form");
     const childForm = document.getElementById("child-form");
     const compatibilityForm = document.getElementById("compatibility-form");
     const financialForm = document.getElementById("financial-form");
@@ -223,9 +224,10 @@ document.addEventListener("DOMContentLoaded", () => {
             const natalPremium = document.querySelector('.premium-section-natal');
             if (natalPremium) natalPremium.style.display = 'none';
             
-            document.getElementById('matrix-result').style.display = (tabType === 'natal' || tabType === 'tarot') ? 'none' : 'block';
+            document.getElementById('matrix-result').style.display = (tabType === 'natal' || tabType === 'tarot' || tabType === 'neuro2026') ? 'none' : 'block';
             document.getElementById('natal-result').style.display = tabType === 'natal' ? 'block' : 'none';
             document.getElementById('tarot-result').style.display = tabType === 'tarot' ? 'block' : 'none';
+            document.getElementById('neuro2026-result').style.display = tabType === 'neuro2026' ? 'block' : 'none';
         });
     });
 
@@ -266,12 +268,37 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('matrix-result').style.display = 'none';
         document.getElementById('natal-result').style.display = 'none';
         document.getElementById('tarot-result').style.display = 'block';
+        document.getElementById('neuro2026-result').style.display = 'none';
 
         showFeedback(feedback, "Генерируем расклад...", "success");
         const tarotReading = document.querySelector('.tarot-reading');
         tarotReading.innerHTML = '<p style="color: var(--text-muted);">⏳ Тасую карты...</p>';
         await loadTarotReading({ name, birthDate, city }, tarotReading);
         showFeedback(feedback, "Расклад готов", "success");
+    });
+
+    neuro2026Form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        const feedback = neuro2026Form.querySelector(".form-feedback");
+        const birthDate = neuro2026Form["neuro-date"].value;
+        const name = neuro2026Form["neuro-name"].value.trim();
+        const city = neuro2026Form["neuro-city"].value.trim();
+
+        if (!birthDate) {
+            showFeedback(feedback, "Укажите дату рождения", "error");
+            return;
+        }
+
+        document.getElementById('matrix-result').style.display = 'none';
+        document.getElementById('natal-result').style.display = 'none';
+        document.getElementById('tarot-result').style.display = 'none';
+        document.getElementById('neuro2026-result').style.display = 'block';
+
+        showFeedback(feedback, "Связываюсь с будущим...", "success");
+        const readingContainer = document.querySelector('.neuro2026-reading');
+        readingContainer.innerHTML = '<p style="color: var(--text-muted);">⏳ Нейросеть сканирует 2026 год...</p>';
+        await loadNeuro2026Reading({ name, birthDate, city }, readingContainer);
+        showFeedback(feedback, "Прогноз готов", "success");
     });
 
     const natalForm = document.getElementById("natal-form");
@@ -470,6 +497,88 @@ async function loadTarotReading(data, container) {
     } catch (error) {
         console.error('Tarot reading error:', error);
         container.innerHTML = '<p style="color: var(--danger);">❌ Ошибка подключения</p>';
+    }
+}
+
+async function loadNeuro2026Reading(data, container) {
+    try {
+        const response = await fetch('/api/neuro-horoscope', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+            const { theme, general, career, love, advice } = result.data;
+            container.innerHTML = '';
+
+            // Theme Section
+            const themeDiv = document.createElement('div');
+            themeDiv.className = 'neuro-item';
+
+            const themeTitle = document.createElement('h4');
+            themeTitle.className = 'neuro-title';
+            themeTitle.textContent = 'Тема 2026 года';
+
+            const themeText = document.createElement('p');
+            themeText.className = 'neuro-theme';
+            themeText.textContent = `«${theme}»`;
+
+            themeDiv.appendChild(themeTitle);
+            themeDiv.appendChild(themeText);
+            container.appendChild(themeDiv);
+
+            // Sections Helper
+            const createSection = (title, text, color, emoji) => {
+                const div = document.createElement('div');
+                div.className = 'neuro-item';
+                div.style.borderLeft = `3px solid ${color}`;
+
+                const h4 = document.createElement('h4');
+                h4.style.color = color;
+                h4.style.marginBottom = '8px';
+                h4.textContent = `${emoji} ${title}`;
+
+                const p = document.createElement('p');
+                p.className = 'neuro-text';
+                p.textContent = text;
+
+                div.appendChild(h4);
+                div.appendChild(p);
+                return div;
+            };
+
+            container.appendChild(createSection('Общий вайб', general, '#5fdda5', '🔮'));
+            container.appendChild(createSection('Карьера и Tech', career, '#7e4bf4', '🚀'));
+            container.appendChild(createSection('Любовь', love, '#dd5f5f', '❤️'));
+
+            // Advice Section
+            const adviceDiv = document.createElement('div');
+            adviceDiv.className = 'neuro-item neuro-advice';
+
+            const adviceTitle = document.createElement('h4');
+            adviceTitle.className = 'neuro-title';
+            adviceTitle.textContent = '🗝 Главный совет';
+
+            const adviceText = document.createElement('p');
+            adviceText.className = 'neuro-text';
+            adviceText.style.fontStyle = 'italic';
+            adviceText.textContent = advice;
+
+            adviceDiv.appendChild(adviceTitle);
+            adviceDiv.appendChild(adviceText);
+            container.appendChild(adviceDiv);
+
+        } else {
+            container.textContent = '❌ ' + result.error;
+            container.style.color = 'var(--danger)';
+        }
+    } catch (error) {
+        console.error('Neuro 2026 reading error:', error);
+        container.textContent = '❌ Ошибка подключения';
+        container.style.color = 'var(--danger)';
     }
 }
 

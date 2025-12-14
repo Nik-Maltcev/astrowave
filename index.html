@@ -55,6 +55,7 @@
                     <button class="matrix-tab active" data-tab="personal">Матрица судьбы</button>
                     <button class="matrix-tab" data-tab="natal">Натальная карта</button>
                     <button class="matrix-tab" data-tab="tarot">Таро на день</button>
+                    <button class="matrix-tab" data-tab="neuro2026">Нейрогороскоп 2026</button>
                     <button class="matrix-tab" data-tab="child">Детская матрица</button>
                     <button class="matrix-tab" data-tab="compatibility">Совместимость</button>
                     <button class="matrix-tab" data-tab="financial">Финансовая матрица</button>
@@ -76,6 +77,23 @@
                         <div class="form-feedback" role="alert" aria-live="polite"></div>
                     </form>
                     
+                    <form id="neuro2026-form" class="matrix-form" data-form="neuro2026" novalidate>
+                        <div class="form-group">
+                            <label for="neuro-name">Имя</label>
+                            <input type="text" id="neuro-name" name="neuro-name" placeholder="Например, Алина">
+                        </div>
+                        <div class="form-group">
+                            <label for="neuro-date">Дата рождения<span aria-hidden="true">*</span></label>
+                            <input type="date" id="neuro-date" name="neuro-date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="neuro-city">Город</label>
+                            <input type="text" id="neuro-city" name="neuro-city" placeholder="Например, Москва">
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--full">Узнать будущее 2026</button>
+                        <div class="form-feedback" role="alert" aria-live="polite"></div>
+                    </form>
+
                     <form id="tarot-form" class="matrix-form" data-form="tarot" novalidate>
                         <div class="form-group">
                             <label for="tarot-name">Имя</label>
@@ -170,6 +188,13 @@
                             <p class="result-intro">Бесплатный расклад на сегодняшний день.</p>
                         </header>
                         <div class="tarot-reading"></div>
+                    </article>
+                    <article class="result-card" id="neuro2026-result" style="display: none;">
+                        <header>
+                            <h3>Нейрогороскоп 2026</h3>
+                            <p class="result-intro">Твой персональный прогноз от AI-астролога.</p>
+                        </header>
+                        <div class="neuro2026-reading"></div>
                     </article>
                     <article class="result-card" id="natal-result">
                         <header>
