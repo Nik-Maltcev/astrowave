@@ -8,7 +8,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const neuroContentBlurred = document.getElementById("neuro-content-blurred");
     const unlockBtn = document.getElementById("unlock-btn");
 
-    // Preload sound effects or analytics if needed
+    // Generate animated stars
+    generateStars();
+    
+    // Animate stats counter
+    animateCounter();
 
     neuro2026Form.addEventListener("submit", async (event) => {
         event.preventDefault();
@@ -150,5 +154,59 @@ document.addEventListener("DOMContentLoaded", () => {
         if (type) {
             container.classList.add(`form-feedback--${type}`);
         }
+    }
+
+    // Generate starfield
+    function generateStars() {
+        const starsContainer = document.getElementById('stars');
+        if (!starsContainer) return;
+        
+        const starCount = 80;
+        
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            
+            // Random position
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            
+            // Random size
+            if (Math.random() > 0.8) star.classList.add('large');
+            if (Math.random() > 0.9) star.classList.add('bright');
+            
+            // Random animation delay
+            star.style.animationDelay = Math.random() * 3 + 's';
+            star.style.animationDuration = (2 + Math.random() * 3) + 's';
+            
+            starsContainer.appendChild(star);
+        }
+    }
+
+    // Animate counter on page load
+    function animateCounter() {
+        const counter = document.getElementById('stats-counter');
+        if (!counter) return;
+        
+        const target = 14832;
+        const duration = 2000;
+        const start = Date.now();
+        
+        function update() {
+            const elapsed = Date.now() - start;
+            const progress = Math.min(elapsed / duration, 1);
+            
+            // Easing function
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const current = Math.floor(eased * target);
+            
+            counter.textContent = current.toLocaleString('ru-RU');
+            
+            if (progress < 1) {
+                requestAnimationFrame(update);
+            }
+        }
+        
+        update();
     }
 });

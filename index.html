@@ -10,11 +10,21 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Manrope:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
-<body class="theme-dark">
-    <div class="cosmic-glow" aria-hidden="true"></div>
+<body>
+    <!-- Animated Background -->
+    <div class="starfield" aria-hidden="true"></div>
+    <div class="stars" id="stars" aria-hidden="true"></div>
+    
+    <!-- Celestial Objects -->
+    <div class="celestial-objects" aria-hidden="true">
+        <div class="moon"></div>
+        <div class="planet planet-1"></div>
+        <div class="planet planet-2"></div>
+    </div>
+
     <header class="site-header">
         <div class="logo">
-            <span class="logo__emblem">✶</span>
+            <span class="logo__emblem">✦</span>
             <span class="logo__word">Astro <span class="logo__accent">Wave</span> AI</span>
         </div>
     </header>
@@ -23,37 +33,40 @@
         <section class="hero" id="hero">
             <div class="hero__content">
                 <div class="hero__badge">🔮 VIRAL 2026 TREND</div>
-                <h1 class="hero__title">Узнай, что ждёт тебя в 2026</h1>
+                <h1 class="hero__title">Узнай, что ждёт тебя<br>в 2026 году</h1>
                 <p class="hero__subtitle">Персональный AI-прогноз на основе астрологии, нумерологии и твоей уникальной энергетики</p>
-                <p class="hero__stats">⚡️ Уже создано прогнозов: <span id="stats-counter">14 832</span></p>
+                <p class="hero__stats">
+                    <span class="hero__stats-icon">⚡</span>
+                    Уже создано прогнозов: <strong id="stats-counter">14 832</strong>
+                </p>
             </div>
         </section>
 
         <section class="features" id="features">
             <div class="features__container">
                 <div class="feature-card">
-                    <div class="feature-card__icon">🌟</div>
+                    <span class="feature-card__icon">🌟</span>
                     <h3 class="feature-card__title">Главная тема года</h3>
-                    <p class="feature-card__desc">Узнай ключевую энергию, которая будет направлять твой путь весь 2026 год</p>
+                    <p class="feature-card__desc">Ключевая энергия, которая будет направлять твой путь</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-card__icon">💼</div>
+                    <span class="feature-card__icon">💼</span>
                     <h3 class="feature-card__title">Карьера и деньги</h3>
-                    <p class="feature-card__desc">Когда ждать повышения, новых возможностей и финансового роста</p>
+                    <p class="feature-card__desc">Когда ждать новых возможностей и финансового роста</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-card__icon">❤️</div>
+                    <span class="feature-card__icon">💜</span>
                     <h3 class="feature-card__title">Любовь и отношения</h3>
-                    <p class="feature-card__desc">Прогноз для личной жизни: встречи, перемены, важные решения</p>
+                    <p class="feature-card__desc">Прогноз для личной жизни: встречи и важные решения</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-card__icon">🗝️</div>
+                    <span class="feature-card__icon">🗝️</span>
                     <h3 class="feature-card__title">Секретный совет</h3>
-                    <p class="feature-card__desc">Персональная рекомендация, которая поможет избежать ошибок</p>
+                    <p class="feature-card__desc">Персональная рекомендация от звёзд</p>
                 </div>
             </div>
             <div class="features__cta">
-                <p class="features__hook">Готов узнать своё будущее?</p>
+                <p class="features__hook">✨ Готов узнать своё будущее?</p>
                 <a href="#neuro-calculator" class="btn btn--outline">Получить прогноз ↓</a>
             </div>
         </section>
@@ -63,7 +76,7 @@
                 <div class="panel panel--form">
                     <form id="neuro2026-form" class="neuro-form" novalidate>
                         <div class="form-header">
-                            <h3>Введи данные для AI-анализа</h3>
+                            <h3>✧ Введи данные для AI-анализа ✧</h3>
                         </div>
                         <div class="form-group">
                             <label for="neuro-name">Имя</label>
@@ -77,19 +90,19 @@
                             <label for="neuro-city">Город проживания</label>
                             <input type="text" id="neuro-city" name="neuro-city" placeholder="Где ты будешь в 2026?" required>
                         </div>
+                        <div class="form-feedback" role="alert" aria-live="polite"></div>
                         <button type="submit" class="btn btn--primary btn--full btn--glow">
                             <span class="btn-text">Сгенерировать будущее</span>
                             <span class="btn-icon">✨</span>
                         </button>
-                        <div class="form-feedback" role="alert" aria-live="polite"></div>
-                        <p class="form-note">⚠️ Высокая нагрузка на сервер. Генерация может занять до 10 секунд.</p>
+                        <p class="form-note">🌙 Генерация занимает до 10 секунд</p>
                     </form>
                 </div>
 
                 <div class="panel panel--results" id="neuro-result" style="display: none;">
                     <article class="result-card neuro-card">
                         <header class="neuro-header">
-                            <h3>Твой Нейро-Прогноз 2026</h3>
+                            <h3>☽ Твой Нейро-Прогноз 2026 ☾</h3>
                             <div class="neuro-meta">
                                 <span class="tag">AI Generated</span>
                                 <span class="tag">Personalized</span>
@@ -103,17 +116,17 @@
                         <div class="neuro-content-locked" id="neuro-content-locked">
                             <div class="blur-overlay">
                                 <div class="lock-message">
-                                    <span class="lock-icon">🔒</span>
+                                    <span class="lock-icon">🔐</span>
                                     <h4>Раскрой полную версию</h4>
-                                    <p>Узнай о Карьере, Любви и получи Секретный Совет на 2026 год.</p>
+                                    <p>Узнай о Карьере, Любви и получи Секретный Совет на 2026 год</p>
                                     <button class="btn btn--gold btn--full" id="unlock-btn">
                                         Открыть всё за 299₽
                                     </button>
-                                    <p class="lock-sub">Безопасная оплата. Мгновенный доступ.</p>
+                                    <p class="lock-sub">🔒 Безопасная оплата • Мгновенный доступ</p>
                                 </div>
                             </div>
                             <div class="blurred-text" id="neuro-content-blurred">
-                                <!-- Blurred content injected here (fake or real) -->
+                                <!-- Blurred content injected here -->
                             </div>
                         </div>
                     </article>
@@ -123,7 +136,7 @@
     </main>
 
     <footer class="site-footer">
-        <p>&copy; 2024 Astro Wave AI. Все права защищены.</p>
+        <p>✦ &copy; 2024 Astro Wave AI • Все права защищены ✦</p>
     </footer>
 
     <script src="script.js" defer></script>
