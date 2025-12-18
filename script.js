@@ -75,27 +75,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    unlockBtn.addEventListener("click", async () => {
-        unlockBtn.disabled = true;
-        unlockBtn.textContent = "Обработка платежа...";
-
-        // Simulate payment processing
-        await new Promise(r => setTimeout(r, 1500));
-
-        neuroContentLocked.classList.add("unlocked");
-        unlockBtn.textContent = "Успешно!";
-
-        // Populate the blurred content with real data if it was hidden,
-        // or just reveal it if it was already there but blurred.
-        // In this implementation, we will reveal the already rendered (but hidden/blurred) content.
-    });
-
     function renderNeuroResult(data) {
-        // Clear previous
-        neuroContentFree.innerHTML = '';
-        neuroContentBlurred.innerHTML = '';
+        const resultContent = document.getElementById("neuro-content-free");
+        resultContent.innerHTML = '';
 
-        // 1. Visible Content (Theme + General Vibe)
+        // Theme block
         const themeBlock = document.createElement('div');
         themeBlock.className = 'neuro-item';
         themeBlock.innerHTML = `
@@ -103,48 +87,59 @@ document.addEventListener("DOMContentLoaded", () => {
             <h2 class="neuro-main-theme">«${data.theme}»</h2>
             <div class="neuro-text-block">${data.general}</div>
         `;
-        neuroContentFree.appendChild(themeBlock);
+        resultContent.appendChild(themeBlock);
 
-        // 2. Locked Content (Career, Love, Advice) - Rendered but blurred
-        // We render this immediately into the blurred container
+        // Career block
+        const careerBlock = createSection('Карьера и Финансы', '💼', data.career, '#8b5cf6');
+        resultContent.appendChild(careerBlock);
 
-        const careerBlock = createLockedSection('Карьера и Финансы 🚀', data.career, '#7e4bf4');
-        const loveBlock = createLockedSection('Любовь и Отношения ❤️', data.love, '#dd5f5f');
-        const adviceBlock = createLockedSection('Секретный Совет 🗝', data.advice, '#d4af37', true);
+        // Love block
+        const loveBlock = createSection('Любовь и Отношения', '💜', data.love, '#ec4899');
+        resultContent.appendChild(loveBlock);
 
-        neuroContentBlurred.appendChild(careerBlock);
-        neuroContentBlurred.appendChild(loveBlock);
-        neuroContentBlurred.appendChild(adviceBlock);
+        // Advice block
+        const adviceBlock = createSection('Секретный Совет', '🗝️', data.advice, '#c9a227', true);
+        resultContent.appendChild(adviceBlock);
+
+        // CTA block - Персональная стратегия
+        const ctaBlock = document.createElement('div');
+        ctaBlock.className = 'strategy-cta';
+        ctaBlock.innerHTML = `
+            <div class="strategy-cta__glow"></div>
+            <div class="strategy-cta__content">
+                <span class="strategy-cta__badge">🌟 ЭКСКЛЮЗИВ</span>
+                <h3 class="strategy-cta__title">Персональная стратегия-план на 2026</h3>
+                <p class="strategy-cta__desc">Получи детальный пошаговый план действий на каждый месяц года: когда начинать проекты, когда отдыхать, благоприятные даты для важных решений</p>
+                <ul class="strategy-cta__list">
+                    <li>✓ Помесячный план действий</li>
+                    <li>✓ Благоприятные и опасные даты</li>
+                    <li>✓ Персональные ритуалы и практики</li>
+                    <li>✓ PDF-файл навсегда</li>
+                </ul>
+                <div class="strategy-cta__price">
+                    <span class="strategy-cta__old-price">599₽</span>
+                    <span class="strategy-cta__new-price">299₽</span>
+                </div>
+                <a href="#" class="btn btn--gold strategy-cta__btn" id="buy-strategy-btn">
+                    Получить стратегию ✨
+                </a>
+                <p class="strategy-cta__note">🔒 Безопасная оплата • Мгновенная доставка на email</p>
+            </div>
+        `;
+        resultContent.appendChild(ctaBlock);
     }
 
-    function createLockedSection(title, content, color, isItalic = false) {
+    function createSection(title, icon, content, color, isHighlight = false) {
         const div = document.createElement('div');
-        div.style.marginBottom = '24px';
+        div.className = 'neuro-section-block' + (isHighlight ? ' neuro-section-block--highlight' : '');
 
-        const h4 = document.createElement('h4');
-        h4.style.color = color;
-        h4.style.fontSize = '18px';
-        h4.style.marginBottom = '12px';
-        h4.style.textTransform = 'uppercase';
-        h4.style.letterSpacing = '0.05em';
-        h4.textContent = title;
+        div.innerHTML = `
+            <h4 class="neuro-block-title" style="color: ${color}">
+                <span>${icon}</span> ${title}
+            </h4>
+            <p class="neuro-block-text">${content}</p>
+        `;
 
-        const p = document.createElement('p');
-        p.style.lineHeight = '1.8';
-        p.style.color = 'var(--text-muted)';
-        p.textContent = content;
-
-        if (isItalic) {
-            p.style.fontStyle = 'italic';
-            p.style.borderLeft = `3px solid ${color}`;
-            p.style.paddingLeft = '16px';
-            p.style.background = 'rgba(255,255,255,0.03)';
-            p.style.padding = '16px';
-            p.style.borderRadius = '0 8px 8px 0';
-        }
-
-        div.appendChild(h4);
-        div.appendChild(p);
         return div;
     }
 
