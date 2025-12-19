@@ -101,32 +101,92 @@ document.addEventListener("DOMContentLoaded", () => {
         const adviceBlock = createSection('Секретный Совет', '🗝️', data.advice, '#c9a227', true);
         resultContent.appendChild(adviceBlock);
 
-        // CTA block - Персональная стратегия
+        // CTA block - Персональная стратегия с таймером
         const ctaBlock = document.createElement('div');
         ctaBlock.className = 'strategy-cta';
         ctaBlock.innerHTML = `
             <div class="strategy-cta__glow"></div>
             <div class="strategy-cta__content">
-                <span class="strategy-cta__badge">🌟 ЭКСКЛЮЗИВ</span>
-                <h3 class="strategy-cta__title">Персональная стратегия-план на 2026</h3>
-                <p class="strategy-cta__desc">Получи детальный пошаговый план действий на каждый месяц года: когда начинать проекты, когда отдыхать, благоприятные даты для важных решений</p>
-                <ul class="strategy-cta__list">
-                    <li>✓ Помесячный план действий</li>
-                    <li>✓ Благоприятные и опасные даты</li>
-                    <li>✓ Персональные ритуалы и практики</li>
-                    <li>✓ PDF-файл навсегда</li>
-                </ul>
-                <div class="strategy-cta__price">
-                    <span class="strategy-cta__old-price">599₽</span>
-                    <span class="strategy-cta__new-price">299₽</span>
+                <div class="strategy-cta__urgent">
+                    <span class="urgent-icon">🔥</span>
+                    <span class="urgent-text">АКЦИЯ ИСТЕКАЕТ ЧЕРЕЗ</span>
+                    <div class="countdown" id="countdown">
+                        <div class="countdown__item">
+                            <span class="countdown__number" id="countdown-min">15</span>
+                            <span class="countdown__label">мин</span>
+                        </div>
+                        <span class="countdown__sep">:</span>
+                        <div class="countdown__item">
+                            <span class="countdown__number" id="countdown-sec">00</span>
+                            <span class="countdown__label">сек</span>
+                        </div>
+                    </div>
                 </div>
-                <a href="#" class="btn btn--gold strategy-cta__btn" id="buy-strategy-btn">
-                    Получить стратегию ✨
+                
+                <div class="strategy-cta__badge-row">
+                    <span class="strategy-cta__badge">🤖 AI-АСТРОЛОГ</span>
+                    <span class="strategy-cta__badge strategy-cta__badge--hot">🔥 ОСТАЛОСЬ 3 МЕСТА</span>
+                </div>
+                
+                <h3 class="strategy-cta__title">Персональная Стратегия-План<br>на 2026 год</h3>
+                
+                <p class="strategy-cta__subtitle">от Нейро-Астролога, обученного на всех школах астрологии, нумерологии и таро</p>
+                
+                <div class="strategy-cta__features">
+                    <div class="strategy-feature">
+                        <span class="strategy-feature__icon">📅</span>
+                        <span class="strategy-feature__text">Помесячный план действий</span>
+                    </div>
+                    <div class="strategy-feature">
+                        <span class="strategy-feature__icon">⭐</span>
+                        <span class="strategy-feature__text">Благоприятные даты для решений</span>
+                    </div>
+                    <div class="strategy-feature">
+                        <span class="strategy-feature__icon">⚠️</span>
+                        <span class="strategy-feature__text">Опасные периоды и как их пройти</span>
+                    </div>
+                    <div class="strategy-feature">
+                        <span class="strategy-feature__icon">🎯</span>
+                        <span class="strategy-feature__text">Личные точки роста и ресурсы</span>
+                    </div>
+                    <div class="strategy-feature">
+                        <span class="strategy-feature__icon">💫</span>
+                        <span class="strategy-feature__text">Ритуалы и практики под твою карту</span>
+                    </div>
+                </div>
+                
+                <div class="strategy-cta__price-block">
+                    <div class="strategy-cta__price-old">
+                        <span class="price-label">Обычная цена:</span>
+                        <span class="price-value">1 999₽</span>
+                    </div>
+                    <div class="strategy-cta__price-new">
+                        <span class="price-label">Сейчас всего:</span>
+                        <span class="price-value">299₽</span>
+                        <span class="price-save">-85%</span>
+                    </div>
+                </div>
+                
+                <a href="https://t.me/nikmaltcev" target="_blank" class="btn btn--gold strategy-cta__btn">
+                    <span class="btn-icon">💬</span>
+                    Написать "ПРОГНОЗ" в Telegram
                 </a>
-                <p class="strategy-cta__note">🔒 Безопасная оплата • Мгновенная доставка на email</p>
+                
+                <p class="strategy-cta__instruction">
+                    👆 Нажми кнопку и напиши слово <strong>«ПРОГНОЗ»</strong> — получишь стратегию за 299₽
+                </p>
+                
+                <div class="strategy-cta__trust">
+                    <span>✓ Ответ в течение 5 минут</span>
+                    <span>✓ Оплата после консультации</span>
+                    <span>✓ Гарантия возврата</span>
+                </div>
             </div>
         `;
         resultContent.appendChild(ctaBlock);
+
+        // Start countdown timer
+        startCountdown();
     }
 
     function createSection(title, icon, content, color, isHighlight = false) {
@@ -203,5 +263,34 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         
         update();
+    }
+
+    // Countdown timer for urgency
+    function startCountdown() {
+        const minEl = document.getElementById('countdown-min');
+        const secEl = document.getElementById('countdown-sec');
+        if (!minEl || !secEl) return;
+
+        let totalSeconds = 15 * 60; // 15 minutes
+
+        function tick() {
+            if (totalSeconds <= 0) {
+                minEl.textContent = '00';
+                secEl.textContent = '00';
+                // Restart timer for continuous urgency
+                totalSeconds = 15 * 60;
+            }
+
+            const mins = Math.floor(totalSeconds / 60);
+            const secs = totalSeconds % 60;
+
+            minEl.textContent = mins.toString().padStart(2, '0');
+            secEl.textContent = secs.toString().padStart(2, '0');
+
+            totalSeconds--;
+        }
+
+        tick();
+        setInterval(tick, 1000);
     }
 });

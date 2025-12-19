@@ -748,9 +748,10 @@ input:focus {
 /* Strategy CTA Block */
 .strategy-cta {
     margin: 32px -28px -32px;
-    padding: 40px 28px;
-    background: linear-gradient(180deg, rgba(201, 162, 39, 0.08) 0%, rgba(139, 92, 246, 0.08) 100%);
-    border-top: 2px solid rgba(201, 162, 39, 0.3);
+    padding: 0;
+    background: linear-gradient(180deg, rgba(236, 72, 153, 0.05) 0%, rgba(201, 162, 39, 0.1) 50%, rgba(139, 92, 246, 0.05) 100%);
+    border-top: 3px solid;
+    border-image: linear-gradient(90deg, var(--accent-secondary), var(--accent), var(--accent-pink)) 1;
     position: relative;
     overflow: hidden;
     text-align: center;
@@ -758,99 +759,283 @@ input:focus {
 
 .strategy-cta__glow {
     position: absolute;
-    top: -50%;
+    top: -100px;
     left: 50%;
     transform: translateX(-50%);
-    width: 300px;
-    height: 300px;
-    background: radial-gradient(circle, rgba(201, 162, 39, 0.15) 0%, transparent 70%);
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(201, 162, 39, 0.2) 0%, transparent 60%);
     pointer-events: none;
+    animation: glow-pulse 3s infinite;
 }
 
 .strategy-cta__content {
     position: relative;
     z-index: 1;
+    padding: 40px 28px 36px;
+}
+
+/* Urgent Timer Block */
+.strategy-cta__urgent {
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    margin: -40px -28px 28px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    animation: urgent-pulse 2s infinite;
+}
+
+@keyframes urgent-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.9; }
+}
+
+.urgent-icon {
+    font-size: 20px;
+    animation: shake 0.5s infinite;
+}
+
+@keyframes shake {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-5deg); }
+    75% { transform: rotate(5deg); }
+}
+
+.urgent-text {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    color: #fff;
+}
+
+.countdown {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.countdown__item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.countdown__number {
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff;
+    font-size: 24px;
+    font-weight: 700;
+    padding: 6px 12px;
+    border-radius: 8px;
+    min-width: 50px;
+    font-family: monospace;
+}
+
+.countdown__label {
+    font-size: 9px;
+    color: rgba(255, 255, 255, 0.8);
+    text-transform: uppercase;
+    margin-top: 2px;
+}
+
+.countdown__sep {
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* Badge Row */
+.strategy-cta__badge-row {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .strategy-cta__badge {
     display: inline-block;
-    background: linear-gradient(135deg, rgba(201, 162, 39, 0.2), rgba(236, 72, 153, 0.2));
-    color: var(--accent-glow);
-    padding: 6px 14px;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(139, 92, 246, 0.1));
+    color: #c4b5fd;
+    padding: 8px 16px;
     border-radius: 20px;
     font-size: 11px;
     font-weight: 700;
-    letter-spacing: 0.1em;
-    margin-bottom: 16px;
-    border: 1px solid rgba(201, 162, 39, 0.3);
+    letter-spacing: 0.08em;
+    border: 1px solid rgba(139, 92, 246, 0.4);
+}
+
+.strategy-cta__badge--hot {
+    background: linear-gradient(135deg, rgba(239, 68, 68, 0.3), rgba(239, 68, 68, 0.1));
+    color: #fca5a5;
+    border-color: rgba(239, 68, 68, 0.4);
+    animation: pulse 2s infinite;
 }
 
 .strategy-cta__title {
     font-family: "Playfair Display", serif;
-    font-size: 26px;
+    font-size: 28px;
+    line-height: 1.3;
     margin: 0 0 12px;
-    background: linear-gradient(90deg, #fff, var(--accent-glow));
+    background: linear-gradient(135deg, #fff 0%, var(--accent-glow) 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
-.strategy-cta__desc {
+.strategy-cta__subtitle {
     font-size: 14px;
     color: var(--text-muted);
-    margin: 0 0 20px;
-    line-height: 1.6;
+    margin: 0 0 28px;
+    line-height: 1.5;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.strategy-cta__list {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 24px;
+/* Features Grid */
+.strategy-cta__features {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+    text-align: left;
+}
+
+.strategy-feature {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 8px 16px;
+    align-items: center;
+    gap: 10px;
+    background: rgba(0, 0, 0, 0.2);
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.strategy-cta__list li {
-    font-size: 13px;
+.strategy-feature__icon {
+    font-size: 18px;
+    flex-shrink: 0;
+}
+
+.strategy-feature__text {
+    font-size: 12px;
     color: var(--text-primary);
-    opacity: 0.9;
+    line-height: 1.4;
 }
 
-.strategy-cta__price {
-    margin-bottom: 20px;
+/* Price Block */
+.strategy-cta__price-block {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 16px;
+    padding: 20px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(201, 162, 39, 0.2);
+}
+
+.strategy-cta__price-old {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.strategy-cta__price-old .price-label {
+    font-size: 12px;
+    color: var(--text-soft);
+}
+
+.strategy-cta__price-old .price-value {
+    font-size: 18px;
+    color: var(--text-soft);
+    text-decoration: line-through;
+}
+
+.strategy-cta__price-new {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 12px;
 }
 
-.strategy-cta__old-price {
-    font-size: 18px;
-    color: var(--text-soft);
-    text-decoration: line-through;
+.strategy-cta__price-new .price-label {
+    font-size: 14px;
+    color: var(--text-muted);
 }
 
-.strategy-cta__new-price {
-    font-size: 36px;
+.strategy-cta__price-new .price-value {
+    font-size: 42px;
     font-weight: 700;
     color: var(--accent-glow);
-    text-shadow: 0 0 20px rgba(201, 162, 39, 0.5);
+    text-shadow: 0 0 30px rgba(201, 162, 39, 0.6);
+    line-height: 1;
 }
 
+.strategy-cta__price-new .price-save {
+    background: linear-gradient(135deg, #22c55e, #16a34a);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+/* CTA Button */
 .strategy-cta__btn {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    padding: 18px 40px;
-    font-size: 16px;
+    justify-content: center;
+    gap: 10px;
+    padding: 20px 36px;
+    font-size: 15px;
     margin-bottom: 16px;
+    width: 100%;
+    max-width: 360px;
+    animation: btn-glow 2s infinite;
 }
 
-.strategy-cta__note {
-    font-size: 12px;
+@keyframes btn-glow {
+    0%, 100% { box-shadow: 0 10px 30px rgba(201, 162, 39, 0.3), 0 0 40px rgba(201, 162, 39, 0.15); }
+    50% { box-shadow: 0 10px 40px rgba(201, 162, 39, 0.5), 0 0 60px rgba(201, 162, 39, 0.3); }
+}
+
+.strategy-cta__btn .btn-icon {
+    font-size: 20px;
+}
+
+.strategy-cta__instruction {
+    font-size: 14px;
+    color: var(--text-primary);
+    margin: 0 0 20px;
+    line-height: 1.5;
+}
+
+.strategy-cta__instruction strong {
+    color: var(--accent-glow);
+    background: rgba(201, 162, 39, 0.15);
+    padding: 2px 8px;
+    border-radius: 4px;
+}
+
+/* Trust Badges */
+.strategy-cta__trust {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.strategy-cta__trust span {
+    font-size: 11px;
     color: var(--text-soft);
-    margin: 0;
 }
 
 /* Gold Button */
@@ -946,6 +1131,30 @@ input:focus {
     
     .neuro-main-theme {
         font-size: 26px;
+    }
+    
+    /* Strategy CTA Mobile */
+    .strategy-cta__features {
+        grid-template-columns: 1fr;
+    }
+    
+    .strategy-cta__title {
+        font-size: 24px;
+    }
+    
+    .strategy-cta__price-new .price-value {
+        font-size: 36px;
+    }
+    
+    .countdown__number {
+        font-size: 20px;
+        padding: 5px 10px;
+        min-width: 44px;
+    }
+    
+    .strategy-cta__trust {
+        flex-direction: column;
+        gap: 8px;
     }
 }
 
