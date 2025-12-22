@@ -307,7 +307,7 @@ app.post('/api/neuro-horoscope', async (req, res) => {
   if (!process.env.DEEPSEEK_API_KEY) {
     // Fallback Mock Data for Demo/Viral Preview
     console.log("Using Mock Data for Neuro-Horoscope (No API Key)");
-    await new Promise(r => setTimeout(r, 1000)); // Simulate AI thinking time
+    await new Promise(r => setTimeout(r, 3000)); // Simulate AI thinking time
 
     return res.json({
       success: true,

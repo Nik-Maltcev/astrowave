@@ -4,9 +4,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const neuro2026Form = document.getElementById("neuro2026-form");
     const neuroResult = document.getElementById("neuro-result");
     const neuroContentFree = document.getElementById("neuro-content-free");
-    const neuroContentLocked = document.getElementById("neuro-content-locked");
-    const neuroContentBlurred = document.getElementById("neuro-content-blurred");
-    const unlockBtn = document.getElementById("unlock-btn");
 
     // Generate animated stars
     generateStars();
@@ -30,20 +27,49 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Lock form during submission
         submitBtn.disabled = true;
-        submitBtn.querySelector(".btn-text").textContent = "Нейросеть думает...";
-        submitBtn.classList.add("pulse");
         
         neuroResult.style.display = "none";
         
-        // Reset locked state
-        neuroContentLocked.classList.remove("unlocked");
+        // Visualization Elements
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const progressBar = document.getElementById('progress-bar');
+        const loadingPercent = document.getElementById('loading-percent');
+        const loadingStatus = document.getElementById('loading-status');
         
+        // Show Overlay
+        loadingOverlay.classList.add('active');
+        let progress = 0;
+        let progressInterval;
+
+        // Progress Animation Logic
+        const statuses = [
+            "Инициализация нейро-протокола...",
+            "Сканирование звездных карт...",
+            "Синхронизация с эгрегором 2026...",
+            "Расшифровка планетарных транзитов...",
+            "Генерация персональной стратегии...",
+            "Финальная калибровка данных..."
+        ];
+
+        // Simulate progress up to 90% while waiting
+        progressInterval = setInterval(() => {
+            if (progress < 90) {
+                // Non-linear progress: slows down as it gets higher
+                let increment = Math.max(0.5, (90 - progress) / 20);
+                progress += increment;
+
+                progressBar.style.width = `${Math.min(progress, 90)}%`;
+                loadingPercent.textContent = `${Math.round(Math.min(progress, 90))}%`;
+
+                // Change status text based on progress
+                const statusIndex = Math.floor((progress / 90) * statuses.length);
+                if (statuses[statusIndex]) {
+                    loadingStatus.textContent = statuses[statusIndex];
+                }
+            }
+        }, 100);
+
         try {
-            showFeedback(feedback, "Соединение с AI-сервером...", "success");
-
-            // Artificial delay for "processing" feel
-            await new Promise(r => setTimeout(r, 1500));
-
             const response = await fetch('/api/neuro-horoscope', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -52,9 +78,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const result = await response.json();
 
+            // Finish progress
+            clearInterval(progressInterval);
+            progressBar.style.width = '100%';
+            loadingPercent.textContent = '100%';
+            loadingStatus.textContent = "Готово!";
+
+            await new Promise(r => setTimeout(r, 500)); // Short pause at 100%
+
             if (result.success) {
                 renderNeuroResult(result.data);
                 neuroResult.style.display = "block";
+
+                // Hide overlay
+                loadingOverlay.classList.remove('active');
 
                 // Scroll to result
                 setTimeout(() => {
@@ -63,15 +100,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 showFeedback(feedback, "", "success"); // Clear feedback
             } else {
+                loadingOverlay.classList.remove('active');
                 showFeedback(feedback, "Ошибка: " + result.error, "error");
             }
         } catch (error) {
             console.error('API Error:', error);
+            clearInterval(progressInterval);
+            loadingOverlay.classList.remove('active');
             showFeedback(feedback, "Ошибка соединения. Попробуйте позже.", "error");
         } finally {
             submitBtn.disabled = false;
-            submitBtn.querySelector(".btn-text").textContent = "Сгенерировать будущее";
-            submitBtn.classList.remove("pulse");
         }
     });
 
