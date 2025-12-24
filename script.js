@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 </a>
                 
                 <p class="strategy-cta__instruction">
-                    👆 Нажми кнопку и напиши слово <strong>«ПРОГНОЗ»</strong> — получишь стратегию за 299₽
+                    👆 Нажми кнопку и напиши слово <strong>«ПРОГНОЗ»</strong> — получишь персональную стратегию за 299₽
                 </p>
                 
                 <div class="strategy-cta__trust">
