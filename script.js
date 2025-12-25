@@ -205,13 +205,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                 </div>
                 
-                <a href="https://t.me/nikmaltcev" target="_blank" class="btn btn--gold strategy-cta__btn">
-                    <span class="btn-icon">💬</span>
-                    Написать "ПРОГНОЗ" в Telegram
+                <a href="https://self.payanyway.ru/17660510197264" target="_blank" class="btn btn--gold strategy-cta__btn">
+                    <span class="btn-icon">🔐</span>
+                    Получить стратегию со скидкой 85%
                 </a>
                 
                 <p class="strategy-cta__instruction">
-                    👆 Нажми кнопку и напиши слово <strong>«ПРОГНОЗ»</strong> — получишь стратегию за 299₽
+                    👆 Безопасная оплата картой • Мгновенный доступ после оплаты
                 </p>
                 
                 <div class="strategy-cta__trust">
